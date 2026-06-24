@@ -1,0 +1,137 @@
+.questionnaire {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  color: var(--color-trudon-black);
+
+  &.transitioning {
+    overflow: visible;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.question {
+  max-width: 42rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  margin-bottom: 3.5rem;
+}
+
+.answers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 56rem;
+}
+
+.answer {
+  flex: 1 1 calc(25% - 0.75rem);
+  min-width: 9rem;
+  max-width: 13rem;
+  padding: 1.25rem 1rem;
+  background: #ffffff;
+  border: none;
+  color: var(--color-trudon-black);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    color 0.25s ease;
+
+  &:hover {
+    background: var(--color-trudon-cream);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-trudon-gold);
+    outline-offset: 3px;
+  }
+
+  &.selected {
+    background: rgba(184, 151, 90, 0.12);
+    color: var(--color-trudon-black);
+  }
+}
+
+.complete {
+  max-width: 32rem;
+  animation: fadeUp 0.7s ease both;
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    color: var(--color-trudon-muted);
+    line-height: 1.5;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1.25rem;
+    justify-content: center;
+  }
+
+  .question {
+    margin-bottom: 2.5rem;
+  }
+
+  .answers {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .answer {
+    flex: none;
+    width: 100%;
+    max-width: 18rem;
+  }
+}
