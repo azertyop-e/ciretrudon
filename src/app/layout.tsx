@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond } from "next/font/google";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 import "./globals.scss";
 
 const cormorant = Cormorant_Garamond({
@@ -7,6 +7,12 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
+});
+
+const jost = Jost({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -20,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${cormorant.variable}`}>
+    <html lang="fr" className={`${cormorant.variable} ${jost.variable}`}>
       <body>{children}</body>
     </html>
   );
