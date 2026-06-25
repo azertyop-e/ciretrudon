@@ -7,13 +7,13 @@ import styles from "./ImageReveal.module.scss";
 interface Props {
   src: string | null;
   className?: string;
-  // Quand true, le changement de src se fait sans animation (pendant les transitions)
   instant?: boolean;
+  revealDelay?: number;
 }
 
 const isVideo = (src: string) => /\.(mp4|webm|mov)$/i.test(src);
 
-export default function ImageReveal({ src, className, instant }: Props) {
+export default function ImageReveal({ src, className, instant, revealDelay = 0 }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -41,7 +41,10 @@ export default function ImageReveal({ src, className, instant }: Props) {
     gsap.killTweensOf(wrapper);
 
     if (!src) {
-      if (!currentSrcRef.current) return;
+      if (!currentSrcRef.current) {
+        gsap.set(wrapper, { clipPath: "inset(100% 0% 0% 0%)" });
+        return;
+      }
       gsap.fromTo(
         wrapper,
         { clipPath: "inset(0% 0% 0% 0%)" },
@@ -57,11 +60,37 @@ export default function ImageReveal({ src, className, instant }: Props) {
 
     if (!currentSrcRef.current) {
       setMedia(src);
-      gsap.fromTo(
-        wrapper,
-        { clipPath: "inset(100% 0% 0% 0%)" },
-        { clipPath: "inset(0% 0% 0% 0%)", duration: 0.7, ease: "power2.out" }
-      );
+
+      const delay = instant ? 0 : revealDelay;
+      let cancelled = false;
+      const doReveal = () => {
+        if (cancelled) return;
+        gsap.fromTo(
+          wrapper,
+          { clipPath: "inset(100% 0% 0% 0%)" },
+          { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power2.out", delay }
+        );
+      };
+
+      if (isVideo(src) && videoRef.current) {
+        const video = videoRef.current;
+        if (video.readyState >= 2) {
+          doReveal();
+        } else {
+          video.addEventListener("canplay", doReveal, { once: true });
+          return () => { cancelled = true; video.removeEventListener("canplay", doReveal); };
+        }
+      } else if (!isVideo(src) && imgRef.current) {
+        const img = imgRef.current;
+        if (img.complete && img.naturalWidth > 0) {
+          doReveal();
+        } else {
+          img.addEventListener("load", doReveal, { once: true });
+          return () => { cancelled = true; img.removeEventListener("load", doReveal); };
+        }
+      } else {
+        doReveal();
+      }
       return;
     }
 
@@ -75,6 +104,7 @@ export default function ImageReveal({ src, className, instant }: Props) {
 
     gsap.to(wrapper, {
       clipPath: "inset(0% 0% 100% 0%)",
+      delay: revealDelay,
       duration: 0.35,
       ease: "power2.inOut",
       onComplete: () => {
@@ -86,7 +116,7 @@ export default function ImageReveal({ src, className, instant }: Props) {
         );
       },
     });
-  }, [src, instant]);
+  }, [src, instant, revealDelay]);
 
   useEffect(() => {
     return () => {

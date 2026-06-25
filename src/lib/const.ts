@@ -12,14 +12,13 @@ export type Slot = {
 
 export type Answer = {
     label: string;
-    pourcentage: [number, number, number, number];
-    // index de slot → média affiché au hover (seuls les slots avec reveal:true sont ciblés)
-    replacements: Partial<Record<number, string>>;
+    pourcentage: number;
+    replacements?: Partial<Record<number, string>>;
+    additions?: Partial<Record<number, string>>;
 };
 
 export type Question = {
     sentence: string;
-    // index de slot → média de repos affiché en arrière-plan
     ambientSlots: Partial<Record<number, string>>;
     answers: Answer[];
 };
@@ -34,9 +33,6 @@ export const ESSENCES = [
 ] as const;
 
 // ─── Slots visuels (8 emplacements) ──────────────────────────────────────────
-// zIndex faible = arrière-plan (petit, lent) | élevé = premier plan (grand, rapide)
-// ambient = position repos | cover = position lors de l'animation stack (transition question)
-// reveal : les slots reveal=true reçoivent les médias de remplacement au hover/submit
 export const SLOTS: Slot[] = [
     // ── Arrière-plan ──────────────────────────────────────────────────────────
     {
@@ -109,64 +105,56 @@ export const SLOTS: Slot[] = [
 
 // ─── Questions + gestion des médias ──────────────────────────────────────────
 // ambientSlots  : médias de repos affichés par slot entre les réponses
-// replacements  : médias injectés dans les slots reveal=true quand la réponse est survolée/soumise
-//                 (seuls les slots listés ici sont remplacés — les autres gardent ambientSlots)
-export const QUIZ: Question[] = [
+// replacements  : médias qui remplacent l'ambient au hover (slot affiche uniquement le replacement)
+// additions     : médias affichés par-dessus l'ambient au hover (les deux coexistent)
+export const QUESTIONS: Question[] = [
     {
         sentence: "Quel lieu vous appelle ?",
-        ambientSlots: {
-            0: "/images/categories/bougies.jpg",
-            1: "/images/categories/savons.jpg",
-            2: "/images/categories/diffuseurs.jpg",
-            3: "/images/categories/parfums.jpg",
-            4: "/images/categories/albatres.jpg",
-            5: "/images/categories/accessoires.jpg",
-            6: "/images/categories/promeneuse.jpg",
-            7: "/images/categories/vaporisateurs.jpg",
-        },
+        ambientSlots: {},
         answers: [
             {
                 label: "Un chalet",
-                pourcentage: [30, 20, 10, 40],
-                replacements: {
-                    3: "/images/meridienne/tiramisu-1.mp4",
-                    4: "/images/meridienne/tiramisu-1.mp4",
-                    5: "/images/meridienne/tiramisu-1.mp4",
-                    6: "/images/meridienne/tiramisu-1.mp4",
-                    7: "/images/meridienne/tiramisu-1.mp4",
+                pourcentage: 30,
+                replacements: {},
+                additions: {
+                    3: "/images/floraison/halo.jpeg",
+                    4: "/images/floraison/halo.jpeg",
+                    5: "/images/floraison/halo.jpeg",
+                    6: "/images/floraison/halo.jpeg",
+                    7: "/images/floraison/halo.jpeg",
                 },
             },
             {
                 label: "Une bibliothèque",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 20,
                 replacements: {
-                    3: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    4: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    5: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    6: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    7: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
+                    3: "/images/floraison/halo.jpeg",
+                    4: "/images/floraison/halo.jpeg",
+                    5: "/images/floraison/halo.jpeg",
+                    6: "/images/floraison/halo.jpeg",
+                    7: "/images/floraison/halo.jpeg",
                 },
             },
             {
                 label: "Un jardin",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 10,
                 replacements: {
-                    3: "/images/floraison/herbe.mp4",
-                    4: "/images/floraison/herbe.mp4",
-                    5: "/images/floraison/herbe.mp4",
-                    6: "/images/floraison/herbe.mp4",
-                    7: "/images/floraison/herbe.mp4",
+                    3: "/images/floraison/Herbe.mp4",
+                    4: "/images/floraison/Herbe.mp4",
+                    5: "/images/floraison/Herbe.mp4",
+                    6: "/images/floraison/Herbe.mp4",
+                    7: "/images/floraison/Herbe.mp4",
                 },
             },
             {
                 label: "Le bord de mer",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 0,
                 replacements: {
-                    3: "/images/meridienne/coast.mp4",
-                    4: "/images/meridienne/coast.mp4",
-                    5: "/images/meridienne/coast.mp4",
-                    6: "/images/meridienne/coast.mp4",
-                    7: "/images/meridienne/coast.mp4",
+                    3: "/images/méridienne/Coast.mp4",
+                    4: "/images/méridienne/Coast.mp4",
+                    5: "/images/méridienne/Coast.mp4",
+                    6: "/images/méridienne/Coast.mp4",
+                    7: "/images/méridienne/Coast.mp4",
                 },
             },
         ],
@@ -178,7 +166,6 @@ export const QUIZ: Question[] = [
             1: "/images/categories/savons.jpg",
             2: "/images/categories/diffuseurs.jpg",
             3: "/images/categories/parfums.jpg",
-            4: "/images/categories/albatres.jpg",
             5: "/images/categories/accessoires.jpg",
             6: "/images/categories/promeneuse.jpg",
             7: "/images/categories/vaporisateurs.jpg",
@@ -186,46 +173,45 @@ export const QUIZ: Question[] = [
         answers: [
             {
                 label: "Le crépitement du feu",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 30,
                 replacements: {
                     3: "/images/categories/bougies.jpg",
-                    4: "/images/categories/bougies.jpg",
                     5: "/images/categories/bougies.jpg",
                     6: "/images/categories/bougies.jpg",
                     7: "/images/categories/bougies.jpg",
                 },
+                additions: {
+                    4: "/images/floraison/violette.jpeg",
+                },
             },
             {
                 label: "Les pages d'un livre",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 20,
                 replacements: {
-                    3: "/images/floraison/texture-di-violette-cristallizzate-agrimontana.jpeg",
-                    4: "/images/floraison/texture-di-violette-cristallizzate-agrimontana.jpeg",
-                    5: "/images/floraison/texture-di-violette-cristallizzate-agrimontana.jpeg",
-                    6: "/images/floraison/texture-di-violette-cristallizzate-agrimontana.jpeg",
-                    7: "/images/floraison/texture-di-violette-cristallizzate-agrimontana.jpeg",
+                    3: "/images/floraison/violette.jpeg",
+                    5: "/images/floraison/violette.jpeg",
+                    6: "/images/floraison/violette.jpeg",
+                    7: "/images/floraison/violette.jpeg",
                 },
             },
             {
                 label: "Le chant de la nature",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 10,
                 replacements: {
-                    3: "/images/floraison/feuillage.mp4",
-                    4: "/images/floraison/feuillage.mp4",
-                    5: "/images/floraison/feuillage.mp4",
-                    6: "/images/floraison/feuillage.mp4",
-                    7: "/images/floraison/feuillage.mp4",
+                    3: "/images/floraison/Feuillage.mp4",
+                    5: "/images/floraison/Feuillage.mp4",
+                    6: "/images/floraison/Feuillage.mp4",
+                    7: "/images/floraison/Feuillage.mp4",
                 },
             },
             {
                 label: "Des vagues",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 10,
                 replacements: {
-                    3: "/images/meridienne/mer-1.mp4",
-                    4: "/images/meridienne/mer-1.mp4",
-                    5: "/images/meridienne/mer-1.mp4",
-                    6: "/images/meridienne/mer-1.mp4",
-                    7: "/images/meridienne/mer-1.mp4",
+                    3: "/images/méridienne/Mer-1.mp4",
+                    5: "/images/méridienne/Mer-1.mp4",
+                    6: "/images/méridienne/Mer-1.mp4",
+                    7: "/images/méridienne/Mer-1.mp4",
                 },
             },
         ],
@@ -245,46 +231,46 @@ export const QUIZ: Question[] = [
         answers: [
             {
                 label: "De la cire tiède",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 30,
                 replacements: {
-                    3: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    4: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    5: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    6: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
-                    7: "/images/floraison/sunwashed-linen-10-oz-candle.jpeg",
+                    3: "/images/floraison/halo.jpeg",
+                    4: "/images/floraison/halo.jpeg",
+                    5: "/images/floraison/halo.jpeg",
+                    6: "/images/floraison/halo.jpeg",
+                    7: "/images/floraison/halo.jpeg",
                 },
             },
             {
                 label: "Du cuir patiné",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 20,
                 replacements: {
-                    3: "/images/meridienne/ceramique.jpg",
-                    4: "/images/meridienne/ceramique.jpg",
-                    5: "/images/meridienne/ceramique.jpg",
-                    6: "/images/meridienne/ceramique.jpg",
-                    7: "/images/meridienne/ceramique.jpg",
+                    3: "/images/méridienne/Ceramique.jpg",
+                    4: "/images/méridienne/Ceramique.jpg",
+                    5: "/images/méridienne/Ceramique.jpg",
+                    6: "/images/méridienne/Ceramique.jpg",
+                    7: "/images/méridienne/Ceramique.jpg",
                 },
             },
             {
                 label: "Un pétale",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 10,
                 replacements: {
-                    3: "/images/floraison/rose.mp4",
-                    4: "/images/floraison/rose.mp4",
-                    5: "/images/floraison/rose.mp4",
-                    6: "/images/floraison/rose.mp4",
-                    7: "/images/floraison/rose.mp4",
+                    3: "/images/floraison/Rose.mp4",
+                    4: "/images/floraison/Rose.mp4",
+                    5: "/images/floraison/Rose.mp4",
+                    6: "/images/floraison/Rose.mp4",
+                    7: "/images/floraison/Rose.mp4",
                 },
             },
             {
                 label: "Du sable fin",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 40,
                 replacements: {
-                    3: "/images/meridienne/mer-2.mp4",
-                    4: "/images/meridienne/mer-2.mp4",
-                    5: "/images/meridienne/mer-2.mp4",
-                    6: "/images/meridienne/mer-2.mp4",
-                    7: "/images/meridienne/mer-2.mp4",
+                    3: "/images/méridienne/Mer-2.mp4",
+                    4: "/images/méridienne/Mer-2.mp4",
+                    5: "/images/méridienne/Mer-2.mp4",
+                    6: "/images/méridienne/Mer-2.mp4",
+                    7: "/images/méridienne/Mer-2.mp4",
                 },
             },
         ],
@@ -304,29 +290,29 @@ export const QUIZ: Question[] = [
         answers: [
             {
                 label: "Azur",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 30,
                 replacements: {
-                    3: "/images/meridienne/mer-2.mp4",
-                    4: "/images/meridienne/mer-2.mp4",
-                    5: "/images/meridienne/mer-2.mp4",
-                    6: "/images/meridienne/mer-2.mp4",
-                    7: "/images/meridienne/mer-2.mp4",
+                    3: "/images/méridienne/Mer-2.mp4",
+                    4: "/images/méridienne/Mer-2.mp4",
+                    5: "/images/méridienne/Mer-2.mp4",
+                    6: "/images/méridienne/Mer-2.mp4",
+                    7: "/images/méridienne/Mer-2.mp4",
                 },
             },
             {
                 label: "Émeraude",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 20,
                 replacements: {
-                    3: "/images/floraison/feuille-lumiere.mp4",
-                    4: "/images/floraison/feuille-lumiere.mp4",
-                    5: "/images/floraison/feuille-lumiere.mp4",
-                    6: "/images/floraison/feuille-lumiere.mp4",
-                    7: "/images/floraison/feuille-lumiere.mp4",
+                    3: "/images/floraison/lumiere.mp4",
+                    4: "/images/floraison/lumiere.mp4",
+                    5: "/images/floraison/lumiere.mp4",
+                    6: "/images/floraison/lumiere.mp4",
+                    7: "/images/floraison/lumiere.mp4",
                 },
             },
             {
                 label: "Noir profond",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 10,
                 replacements: {
                     3: "/images/hero-nuit-rouge.jpg",
                     4: "/images/hero-nuit-rouge.jpg",
@@ -337,13 +323,13 @@ export const QUIZ: Question[] = [
             },
             {
                 label: "Brun/ambré",
-                pourcentage: [30, 20, 10, 40],
+                pourcentage: 40,
                 replacements: {
-                    3: "/images/meridienne/figue.mp4",
-                    4: "/images/meridienne/figue.mp4",
-                    5: "/images/meridienne/figue.mp4",
-                    6: "/images/meridienne/figue.mp4",
-                    7: "/images/meridienne/figue.mp4",
+                    3: "/images/méridienne/Figue.mp4",
+                    4: "/images/méridienne/Figue.mp4",
+                    5: "/images/méridienne/Figue.mp4",
+                    6: "/images/méridienne/Figue.mp4",
+                    7: "/images/méridienne/Figue.mp4",
                 },
             },
         ],

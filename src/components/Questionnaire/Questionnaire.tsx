@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { QUIZ } from "@/lib/const";
+import { QUESTIONS } from "@/lib/const";
 import ImageStack, {
   type ImageStackHandle,
 } from "@/components/ImageStack/ImageStack";
@@ -13,6 +13,7 @@ export default function Questionnaire() {
   const [isComplete, setIsComplete] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredAnswerIndex, setHoveredAnswerIndex] = useState<number | null>(null);
+  const [persistentAdditions, setPersistentAdditions] = useState<Partial<Record<number, string>>>({});
 
   const contentRef = useRef<HTMLDivElement>(null);
   const transitionRef = useRef<ImageStackHandle>(null);
@@ -25,8 +26,8 @@ export default function Questionnaire() {
     return () => window.removeEventListener("mousemove", track);
   }, []);
 
-  const currentQuestion = QUIZ[currentIndex];
-  const total = QUIZ.length;
+  const currentQuestion = QUESTIONS[currentIndex];
+  const total = QUESTIONS.length;
 
   const reEvaluateHover = () => {
     const { x, y } = mousePositionRef.current;
@@ -41,13 +42,19 @@ export default function Questionnaire() {
   const handleAnswer = (optionIndex: number) => {
     if (isTransitioning) return;
 
-    setHoveredAnswerIndex(null);
     setSelectedIndex(optionIndex);
     setIsTransitioning(true);
+    // hoveredAnswerIndex est conservé jusqu'au midpoint pour que les images de hover
+    // soient présentes pendant l'animation de couverture
 
     window.setTimeout(() => {
       transitionRef.current?.run(
         () => {
+          const additions = QUESTIONS[currentIndex]?.answers[optionIndex]?.additions;
+          if (additions) {
+            setPersistentAdditions((prev) => ({ ...prev, ...additions }));
+          }
+          setHoveredAnswerIndex(null);
           if (currentIndex < total - 1) {
             setCurrentIndex((prev) => prev + 1);
             setSelectedIndex(null);
@@ -75,6 +82,7 @@ export default function Questionnaire() {
         contentRef={contentRef}
         questionIndex={currentIndex}
         hoveredAnswerIndex={hoveredAnswerIndex}
+        persistentAdditions={persistentAdditions}
       />
 
       <div className={styles.content} ref={contentRef}>

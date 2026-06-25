@@ -4,7 +4,7 @@
   min-height: 100dvh;
   width: 100%;
   overflow: hidden;
-  background: #ffffff;
+  background: url("/images/bg.jpg") center / cover no-repeat fixed;
   color: var(--color-trudon-black);
 
   &.transitioning {
@@ -50,7 +50,7 @@
   min-width: 9rem;
   max-width: 13rem;
   padding: 1.25rem 1rem;
-  background: #ffffff;
+  background: rgba(242, 236, 224, 0.80);
   border: none;
   color: var(--color-trudon-black);
   font-family: var(--font-serif);
