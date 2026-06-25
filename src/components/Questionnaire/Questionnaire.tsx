@@ -7,7 +7,10 @@ import ImageStack, {
   type ImageStackHandle,
 } from "@/components/ImageStack/ImageStack";
 import SoundButton from "@/components/SoundButton/SoundButton";
+import BackButton from "@/components/BackButton/BackButton";
 import styles from "./Questionnaire.module.scss";
+
+type Snapshot = { scores: number[]; persistentAdditions: Partial<Record<number, string>> };
 
 function computeFamilies(scores: number[]): number[] {
   const total = QUESTIONS.length;
@@ -28,6 +31,8 @@ export default function Questionnaire() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredAnswerIndex, setHoveredAnswerIndex] = useState<number | null>(null);
   const [persistentAdditions, setPersistentAdditions] = useState<Partial<Record<number, string>>>({});
+
+  const [history, setHistory] = useState<Snapshot[]>([]);
 
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState<number>(1);
@@ -63,48 +68,44 @@ export default function Questionnaire() {
     return picked;
   };
 
-  // Start / switch audio scene when the leading family changes
-  useEffect(() => {
-    if (leadingFamily === null) return;
-
-    const scene = pickScene(leadingFamily);
-
-    // Stop all currently playing tracks
+  const playScene = (family: number) => {
+    const scene = pickScene(family);
     audioPoolRef.current.forEach((a) => a.pause());
     audioPoolRef.current = [];
     currentSceneRef.current = null;
-
     if (!scene || scene.length === 0) return;
-
     currentSceneRef.current = scene;
-    const label = ESSENCES[leadingFamily].label;
-
+    const label = ESSENCES[family].label;
     scene.forEach((track) => {
       const effectiveVolume = isMutedRef.current ? 0 : track.volume * volumeRef.current;
       const audio = new Audio(track.src);
       const loopMode = track.loop ?? true;
       audio.volume = effectiveVolume;
-
       if (loopMode === true) {
         audio.loop = true;
       } else {
         let remaining = loopMode - 1;
         audio.addEventListener("ended", function onEnded() {
-          if (remaining > 0) {
-            remaining--;
-            audio.currentTime = 0;
-            audio.play().catch(() => {});
-          } else {
-            audio.removeEventListener("ended", onEnded);
-          }
+          if (remaining > 0) { remaining--; audio.currentTime = 0; audio.play().catch(() => {}); }
+          else { audio.removeEventListener("ended", onEnded); }
         });
       }
-
       audio.play().catch(() => {});
       audioPoolRef.current.push(audio);
       const loopLabel = loopMode === true ? "∞" : `×${loopMode}`;
       console.log(`[Audio] ▶ famille "${label}" | piste: ${track.src} | gain: ${track.volume} | loop: ${loopLabel} | slider: ${volumeRef.current} | effectif: ${effectiveVolume}`);
     });
+  };
+
+  // Switch audio scene when the leading family changes (forward flow)
+  useEffect(() => {
+    if (leadingFamily === null) {
+      audioPoolRef.current.forEach((a) => a.pause());
+      audioPoolRef.current = [];
+      currentSceneRef.current = null;
+      return;
+    }
+    playScene(leadingFamily);
   }, [leadingFamily]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -147,11 +148,53 @@ export default function Questionnaire() {
     setHoveredAnswerIndex(index >= 0 ? index : null);
   };
 
+  const handleBack = () => {
+    if (isTransitioning || history.length === 0) return;
+    const snapshot = history[history.length - 1];
+
+    // Compute the new leading family from the restored scores
+    const newLeading = snapshot.scores.every((s) => s === 0)
+      ? null
+      : snapshot.scores.indexOf(Math.max(...snapshot.scores));
+
+    setHistory((h) => h.slice(0, -1));
+    setScores(snapshot.scores);
+    setPersistentAdditions(snapshot.persistentAdditions);
+    setCurrentIndex((prev) => prev - 1);
+    setSelectedIndex(null);
+    setHoveredAnswerIndex(null);
+
+    if (newLeading === null) {
+      // No leading family → stop everything (leadingFamily effect will also fire)
+      audioPoolRef.current.forEach((a) => a.pause());
+      audioPoolRef.current = [];
+      currentSceneRef.current = null;
+    } else if (newLeading === leadingFamily) {
+      // Same family: effect won't re-run, restart audio manually
+      playScene(newLeading);
+    }
+    // Different family: the leadingFamily effect will handle the switch
+  };
+
+  // Intercept browser back button so it steps through questions instead of leaving the page
+  useEffect(() => {
+    window.history.pushState({ question: 0 }, "");
+    const onPopState = () => {
+      window.history.pushState({ question: currentIndex }, "");
+      handleBack();
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [history, isTransitioning]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleAnswer = (optionIndex: number) => {
     if (isTransitioning) return;
 
     const answer = QUESTIONS[currentIndex].answers[optionIndex];
     const nextScores = scores.map((s, i) => i === answer.family ? s + 1 : s);
+
+    setHistory((h) => [...h, { scores, persistentAdditions }]);
+    window.history.pushState({ question: currentIndex + 1 }, "");
 
     setSelectedIndex(optionIndex);
     setIsTransitioning(true);
@@ -200,6 +243,7 @@ export default function Questionnaire() {
       className={`${styles.questionnaire} ${isTransitioning ? styles.transitioning : ""}`}
       aria-label="Questionnaire olfactif"
     >
+      <BackButton onClick={handleBack} visible={history.length > 0 && !isTransitioning} />
       <SoundButton
         isMuted={isMuted}
         volume={volume}
