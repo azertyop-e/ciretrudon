@@ -1,7 +1,14 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { usePageTransition } from "@/components/PageTransition/PageTransitionProvider";
 import styles from "./Hero.module.scss";
 
 export default function Hero() {
+  const router = useRouter();
+  const { triggerExit } = usePageTransition();
+
   return (
     <section className={styles.hero} aria-label="Nuit Rouge">
       <Image
@@ -18,9 +25,13 @@ export default function Hero() {
       <div className={styles.content}>
         <h1 className={styles.title}>Nuit Rouge</h1>
         <p className={styles.subtitle}>Une ode à l&apos;opulence.</p>
-        <a href="/questionnaire" className={styles.cta}>
+        <button
+          type="button"
+          className={styles.cta}
+          onClick={() => triggerExit(() => void router.push("/questionnaire"))}
+        >
           Questionnaire
-        </a>
+        </button>
       </div>
     </section>
   );

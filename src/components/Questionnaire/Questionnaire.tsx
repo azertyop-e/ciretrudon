@@ -8,6 +8,7 @@ import ImageStack, {
 } from "@/components/ImageStack/ImageStack";
 import SoundButton from "@/components/SoundButton/SoundButton";
 import BackButton from "@/components/BackButton/BackButton";
+import { usePageTransition } from "@/components/PageTransition/PageTransitionProvider";
 import styles from "./Questionnaire.module.scss";
 
 type Snapshot = { scores: number[]; persistentAdditions: Partial<Record<number, string>> };
@@ -24,6 +25,7 @@ function computeFamilies(scores: number[]): number[] {
 
 export default function Questionnaire() {
   const router = useRouter();
+  const { triggerExit, signalEnter } = usePageTransition();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -50,6 +52,10 @@ export default function Questionnaire() {
   const leadingFamily = scores.every((s) => s === 0)
     ? null
     : scores.indexOf(Math.max(...scores));
+
+  useEffect(() => {
+    signalEnter();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const track = (e: MouseEvent) => { mousePositionRef.current = { x: e.clientX, y: e.clientY }; };
@@ -199,6 +205,14 @@ export default function Questionnaire() {
     setSelectedIndex(optionIndex);
     setIsTransitioning(true);
 
+    const isLastQuestion = currentIndex === total - 1;
+
+    if (isLastQuestion) {
+      const families = computeFamilies(nextScores);
+      triggerExit(() => void router.push(`/resultat?families=${families.join(",")}`));
+      return;
+    }
+
     window.setTimeout(() => {
       transitionRef.current?.run(
         () => {
@@ -215,13 +229,8 @@ export default function Questionnaire() {
             ESSENCES[leading].label,
           );
           setHoveredAnswerIndex(null);
-          if (currentIndex < total - 1) {
-            setCurrentIndex((prev) => prev + 1);
-            setSelectedIndex(null);
-          } else {
-            const families = computeFamilies(nextScores);
-            void router.push(`/resultat?families=${families.join(",")}`);
-          }
+          setCurrentIndex((prev) => prev + 1);
+          setSelectedIndex(null);
         },
         () => {
           setIsTransitioning(false);

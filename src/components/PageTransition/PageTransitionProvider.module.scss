@@ -1,0 +1,35 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-trudon-cream);
+  clip-path: inset(100% 0% 0% 0%);
+  will-change: clip-path;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  color: var(--color-trudon-black);
+  font-family: var(--font-serif);
+}
+
+.logoName {
+  font-size: 1.625rem;
+  font-weight: 400;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  padding-left: 0.38em;
+}
+
+.logoYear {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+}

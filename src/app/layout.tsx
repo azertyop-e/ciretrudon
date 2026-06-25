@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+import { PageTransitionProvider } from "@/components/PageTransition/PageTransitionProvider";
 import "./globals.scss";
 
 const cormorant = Cormorant_Garamond({
@@ -27,7 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${cormorant.variable} ${jost.variable}`}>
-      <body>{children}</body>
+      <body>
+        <PageTransitionProvider>{children}</PageTransitionProvider>
+      </body>
     </html>
   );
 }

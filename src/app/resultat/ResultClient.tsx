@@ -3,10 +3,12 @@
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Result from "@/components/Result/Result";
+import { usePageTransition } from "@/components/PageTransition/PageTransitionProvider";
 
 export default function ResultClient() {
   const params = useSearchParams();
   const router = useRouter();
+  const { signalEnter } = usePageTransition();
 
   const raw = params.get("families") ?? "";
   const families = raw
@@ -15,6 +17,10 @@ export default function ResultClient() {
     .filter((n) => !isNaN(n) && n >= 0 && n <= 3)
     .slice(0, 2)
     .map((index) => ({ index, percentage: 0 }));
+
+  useEffect(() => {
+    signalEnter();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (families.length === 0) {
