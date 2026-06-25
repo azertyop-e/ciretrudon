@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { QUESTIONS } from "@/lib/const";
-import QuestionnaireTransition, {
-  type QuestionnaireTransitionHandle,
-} from "@/components/QuestionnaireTransition/QuestionnaireTransition";
+import { useEffect, useRef, useState } from "react";
+import { QUIZ } from "@/lib/const";
+import ImageStack, {
+  type ImageStackHandle,
+} from "@/components/ImageStack/ImageStack";
 import styles from "./Questionnaire.module.scss";
 
 export default function Questionnaire() {
@@ -12,16 +12,36 @@ export default function Questionnaire() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [hoveredAnswerIndex, setHoveredAnswerIndex] = useState<number | null>(null);
 
   const contentRef = useRef<HTMLDivElement>(null);
-  const transitionRef = useRef<QuestionnaireTransitionHandle>(null);
+  const transitionRef = useRef<ImageStackHandle>(null);
+  const answerButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const mousePositionRef = useRef({ x: 0, y: 0 });
 
-  const currentQuestion = QUESTIONS[currentIndex];
-  const total = QUESTIONS.length;
+  useEffect(() => {
+    const track = (e: MouseEvent) => { mousePositionRef.current = { x: e.clientX, y: e.clientY }; };
+    window.addEventListener("mousemove", track);
+    return () => window.removeEventListener("mousemove", track);
+  }, []);
+
+  const currentQuestion = QUIZ[currentIndex];
+  const total = QUIZ.length;
+
+  const reEvaluateHover = () => {
+    const { x, y } = mousePositionRef.current;
+    const index = answerButtonsRef.current.findIndex((btn) => {
+      if (!btn) return false;
+      const r = btn.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    });
+    setHoveredAnswerIndex(index >= 0 ? index : null);
+  };
 
   const handleAnswer = (optionIndex: number) => {
     if (isTransitioning) return;
 
+    setHoveredAnswerIndex(null);
     setSelectedIndex(optionIndex);
     setIsTransitioning(true);
 
@@ -36,7 +56,10 @@ export default function Questionnaire() {
             setSelectedIndex(null);
           }
         },
-        () => setIsTransitioning(false),
+        () => {
+          setIsTransitioning(false);
+          reEvaluateHover();
+        },
       );
     }, 250);
   };
@@ -46,10 +69,12 @@ export default function Questionnaire() {
       className={`${styles.questionnaire} ${isTransitioning ? styles.transitioning : ""}`}
       aria-label="Questionnaire olfactif"
     >
-      <QuestionnaireTransition
+      <ImageStack
         ref={transitionRef}
         isTransitioning={isTransitioning}
         contentRef={contentRef}
+        questionIndex={currentIndex}
+        hoveredAnswerIndex={hoveredAnswerIndex}
       />
 
       <div className={styles.content} ref={contentRef}>
@@ -65,15 +90,18 @@ export default function Questionnaire() {
             </h1>
 
             <div className={styles.answers} role="group" aria-label="Réponses possibles">
-              {currentQuestion.options.map((option, index) => (
+              {currentQuestion.answers.map((answer, index) => (
                 <button
-                  key={option.label}
+                  key={answer.label}
+                  ref={(node) => { answerButtonsRef.current[index] = node; }}
                   type="button"
                   className={`${styles.answer} ${selectedIndex === index ? styles.selected : ""}`}
                   onClick={() => handleAnswer(index)}
+                  onMouseEnter={() => setHoveredAnswerIndex(index)}
+                  onMouseLeave={() => setHoveredAnswerIndex(null)}
                   disabled={isTransitioning}
                 >
-                  {option.label}
+                  {answer.label}
                 </button>
               ))}
             </div>
