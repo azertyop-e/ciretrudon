@@ -12,6 +12,7 @@ export type Slot = {
 
 export type Answer = {
     label: string;
+    family: number; // index into ESSENCES (0=Ardente, 1=Méridienne, 2=Floraison, 3=Carnation)
     pourcentage: number;
     replacements?: Partial<Record<number, string>>;
     additions?: Partial<Record<number, string>>;
@@ -26,10 +27,10 @@ export type Question = {
 // ─── Essences ─────────────────────────────────────────────────────────────────
 
 export const ESSENCES = [
-    { label: "Ardente" },
-    { label: "Méridienne" },
-    { label: "Floraison" },
-    { label: "Carnation" },
+    { label: "Ardente",    color: "#1f0a0a", opacity: 0.25 },
+    { label: "Méridienne", color: "#C38954", opacity: 0.25 },
+    { label: "Floraison",  color: "#92A87C", opacity: 0.25 },
+    { label: "Carnation",  color: "#1f0d16", opacity: 0.25 },
 ] as const;
 
 // ─── Slots visuels (8 emplacements) ──────────────────────────────────────────
@@ -114,6 +115,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "Un chalet",
+                family: 0, // Ardente — feu, chaleur, intimité
                 pourcentage: 30,
                 replacements: {},
                 additions: {
@@ -126,6 +128,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Une bibliothèque",
+                family: 3, // Carnation — raffinement, cuir, intellect
                 pourcentage: 20,
                 replacements: {
                     3: "/images/floraison/halo.jpeg",
@@ -137,6 +140,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Un jardin",
+                family: 2, // Floraison — nature, végétal, fleurs
                 pourcentage: 10,
                 replacements: {
                     3: "/images/floraison/Herbe.mp4",
@@ -148,6 +152,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Le bord de mer",
+                family: 1, // Méridienne — mer, littoral, évasion
                 pourcentage: 0,
                 replacements: {
                     3: "/images/méridienne/Coast.mp4",
@@ -173,6 +178,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "Le crépitement du feu",
+                family: 0, // Ardente
                 pourcentage: 30,
                 replacements: {
                     3: "/images/categories/bougies.jpg",
@@ -186,6 +192,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Les pages d'un livre",
+                family: 3, // Carnation
                 pourcentage: 20,
                 replacements: {
                     3: "/images/floraison/violette.jpeg",
@@ -196,6 +203,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Le chant de la nature",
+                family: 2, // Floraison
                 pourcentage: 10,
                 replacements: {
                     3: "/images/floraison/Feuillage.mp4",
@@ -206,6 +214,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Des vagues",
+                family: 1, // Méridienne
                 pourcentage: 10,
                 replacements: {
                     3: "/images/méridienne/Mer-1.mp4",
@@ -231,6 +240,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "De la cire tiède",
+                family: 0, // Ardente — bougie, cire
                 pourcentage: 30,
                 replacements: {
                     3: "/images/floraison/halo.jpeg",
@@ -242,6 +252,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Du cuir patiné",
+                family: 3, // Carnation — cuir, noblesse
                 pourcentage: 20,
                 replacements: {
                     3: "/images/méridienne/Ceramique.jpg",
@@ -253,6 +264,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Un pétale",
+                family: 2, // Floraison
                 pourcentage: 10,
                 replacements: {
                     3: "/images/floraison/Rose.mp4",
@@ -264,6 +276,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Du sable fin",
+                family: 1, // Méridienne
                 pourcentage: 40,
                 replacements: {
                     3: "/images/méridienne/Mer-2.mp4",
@@ -290,6 +303,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "Azur",
+                family: 1, // Méridienne — mer, ciel
                 pourcentage: 30,
                 replacements: {
                     3: "/images/méridienne/Mer-2.mp4",
@@ -301,6 +315,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Émeraude",
+                family: 2, // Floraison — verdure
                 pourcentage: 20,
                 replacements: {
                     3: "/images/floraison/lumiere.mp4",
@@ -312,6 +327,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Noir profond",
+                family: 0, // Ardente — obscurité, intensité
                 pourcentage: 10,
                 replacements: {
                     3: "/images/hero-nuit-rouge.jpg",
@@ -323,6 +339,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Brun/ambré",
+                family: 3, // Carnation — épices, ambre
                 pourcentage: 40,
                 replacements: {
                     3: "/images/méridienne/Figue.mp4",

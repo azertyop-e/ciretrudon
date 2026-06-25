@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { QUESTIONS } from "@/lib/const";
+import { QUESTIONS, ESSENCES } from "@/lib/const";
 import ImageStack, {
   type ImageStackHandle,
 } from "@/components/ImageStack/ImageStack";
@@ -10,6 +10,8 @@ import styles from "./Questionnaire.module.scss";
 export default function Questionnaire() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [scores, setScores] = useState<number[]>([0, 0, 0, 0]);
+  const [winningFamily, setWinningFamily] = useState<number | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredAnswerIndex, setHoveredAnswerIndex] = useState<number | null>(null);
@@ -42,10 +44,11 @@ export default function Questionnaire() {
   const handleAnswer = (optionIndex: number) => {
     if (isTransitioning) return;
 
+    const answer = QUESTIONS[currentIndex].answers[optionIndex];
+    const nextScores = scores.map((s, i) => i === answer.family ? s + 1 : s);
+
     setSelectedIndex(optionIndex);
     setIsTransitioning(true);
-    // hoveredAnswerIndex est conservé jusqu'au midpoint pour que les images de hover
-    // soient présentes pendant l'animation de couverture
 
     window.setTimeout(() => {
       transitionRef.current?.run(
@@ -54,11 +57,22 @@ export default function Questionnaire() {
           if (additions) {
             setPersistentAdditions((prev) => ({ ...prev, ...additions }));
           }
+          setScores(nextScores);
+          const leading = nextScores.indexOf(Math.max(...nextScores));
+          console.log(
+            "Scores :",
+            Object.fromEntries(ESSENCES.map((e, i) => [e.label, nextScores[i]])),
+            "→",
+            ESSENCES[leading].label,
+            ESSENCES[leading].color,
+          );
           setHoveredAnswerIndex(null);
           if (currentIndex < total - 1) {
             setCurrentIndex((prev) => prev + 1);
             setSelectedIndex(null);
           } else {
+            const winner = nextScores.indexOf(Math.max(...nextScores));
+            setWinningFamily(winner);
             setIsComplete(true);
             setSelectedIndex(null);
           }
@@ -71,11 +85,33 @@ export default function Questionnaire() {
     }, 250);
   };
 
+  const leadingFamily = scores.every((s) => s === 0)
+    ? null
+    : scores.indexOf(Math.max(...scores));
+  const resultLabel = winningFamily !== null ? ESSENCES[winningFamily].label : "";
+
+  const toRgba = (hex: string, opacity: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+
   return (
     <section
       className={`${styles.questionnaire} ${isTransitioning ? styles.transitioning : ""}`}
       aria-label="Questionnaire olfactif"
     >
+      {leadingFamily !== null && (
+        <div
+          className={styles.colorOverlay}
+          style={{
+            backgroundColor: toRgba(ESSENCES[leadingFamily].color, ESSENCES[leadingFamily].opacity),
+          }}
+          aria-hidden="true"
+        />
+      )}
+
       <ImageStack
         ref={transitionRef}
         isTransitioning={isTransitioning}
@@ -88,8 +124,9 @@ export default function Questionnaire() {
       <div className={styles.content} ref={contentRef}>
         {isComplete ? (
           <div className={styles.complete}>
-            <h2>Votre senteur se révèle…</h2>
-            <p>Merci d&apos;avoir partagé vos impressions. Votre essence vous attend.</p>
+            <p className={styles.completeEyebrow}>Votre essence est</p>
+            <h2 className={styles.completeTitle}>{resultLabel}</h2>
+            <p className={styles.completeBody}>Votre senteur se révèle… laissez-vous envelopper.</p>
           </div>
         ) : (
           <>
