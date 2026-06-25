@@ -1,0 +1,337 @@
+// ── Base ──────────────────────────────────────────────────────────────────────
+
+.result {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--color-trudon-black);
+  font-family: var(--font-serif);
+}
+
+// ── Solo layout ───────────────────────────────────────────────────────────────
+
+.soloLayout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 5rem 6rem 3.5rem;
+}
+
+.soloMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex: 1;
+  gap: 2rem;
+}
+
+.soloLeft {
+  max-width: 30rem;
+  animation: fadeUp 0.9s 0.3s ease both;
+}
+
+.soloTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.01em;
+}
+
+.soloEyebrow {
+  display: inline;
+  white-space: nowrap;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.85em;
+  margin-bottom: 0.1em;
+  color: #1d1d1b;
+}
+
+.soloEyebrowLabel {
+  display: inline;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.soloRight {
+  flex-shrink: 0;
+  align-self: center;
+  min-width: 22.2rem;
+  text-align: right;
+  animation: fadeUp 0.9s 0.5s ease both;
+}
+
+.soloFooter {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+  animation: fadeUp 0.9s 0.7s ease both;
+}
+
+// ── Duo layout ────────────────────────────────────────────────────────────────
+
+.duoLayout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 4rem 5rem 3.5rem;
+}
+
+.duoHeader {
+  text-align: center;
+  max-width: 42rem;
+  margin: 0 auto;
+  animation: fadeUp 0.9s 0.3s ease both;
+}
+
+.duoTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  margin-bottom: 1rem;
+}
+
+.duoColumns {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
+  padding: 2rem 0;
+  animation: fadeUp 0.9s 0.5s ease both;
+}
+
+.duoSpacer {
+  // center area — background image shows through
+}
+
+.duoLeft,
+.duoRight {
+  min-width: 22.2rem;
+}
+
+.duoLeft {
+  text-align: left;
+}
+
+.duoRight {
+  text-align: right;
+}
+
+.duoFooter {
+  display: flex;
+  justify-content: center;
+  animation: fadeUp 0.9s 0.7s ease both;
+}
+
+// ── Shared typography ─────────────────────────────────────────────────────────
+
+.description {
+  font-family: var(--font-serif);
+  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+  line-height: 1.75;
+  color: var(--color-trudon-black);
+  margin-bottom: 1.5rem;
+  opacity: 0.85;
+}
+
+.restart {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-trudon-black);
+  background: rgba(242, 236, 224, 0.75);
+  border: 1px solid rgba(14, 14, 11, 0.2);
+  padding: 0.75rem 1.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background: var(--color-trudon-cream);
+    border-color: rgba(14, 14, 11, 0.35);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-trudon-gold);
+    outline-offset: 3px;
+  }
+}
+
+.universeLabel {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.fragranceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+}
+
+.fragranceItem {
+  position: relative;
+}
+
+// ── Fragrance link + chevron ──────────────────────────────────────────────────
+
+.fragranceLink {
+  display: block;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  padding-left: 0;
+  transition: padding-left 0.25s ease;
+
+  // chevron gauche (panel aligné à gauche)
+  &::before {
+    content: '‹';
+    position: absolute;
+    left: 0;
+    top: 1.25rem;
+    opacity: 0;
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.75);
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    padding-left: 1.25rem;
+
+    &::before { opacity: 1; }
+  }
+}
+
+// chevron droit (panel aligné à droite)
+.fragranceLinkRight {
+  padding-left: 0;
+  padding-right: 0;
+  transition: padding-right 0.25s ease;
+
+  &::before { display: none; }
+
+  &::after {
+    content: '›';
+    position: absolute;
+    right: 0;
+    top: 1.25rem;
+    opacity: 0;
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.75);
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    padding-left: 0;
+    padding-right: 1.25rem;
+
+    &::after { opacity: 1; }
+  }
+}
+
+.fragranceName {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+.fragranceNotes {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  margin: 0.75rem 0;
+}
+
+// ── Animation ─────────────────────────────────────────────────────────────────
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+
+@media (max-width: 900px) {
+  .soloLayout {
+    padding: 4rem 2.5rem 3rem;
+  }
+
+  .soloMain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3rem;
+  }
+
+  .soloEyebrow {
+    white-space: normal;
+  }
+
+  .soloRight {
+    flex-shrink: 1;
+    align-self: auto;
+    text-align: left;
+    min-width: 0;
+  }
+
+  .duoLayout {
+    padding: 3rem 1.5rem 3rem;
+  }
+
+  .duoColumns {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .duoSpacer {
+    display: none;
+  }
+
+  .duoLeft,
+  .duoRight {
+    text-align: center;
+    min-width: 0;
+  }
+}

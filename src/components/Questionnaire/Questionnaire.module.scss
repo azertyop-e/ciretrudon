@@ -125,6 +125,19 @@
   line-height: 1.6;
 }
 
+.completeDual {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.completeDualItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;

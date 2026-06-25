@@ -1,18 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { QUESTIONS, ESSENCES } from "@/lib/const";
 import ImageStack, {
   type ImageStackHandle,
 } from "@/components/ImageStack/ImageStack";
 import styles from "./Questionnaire.module.scss";
 
+function computeFamilies(scores: number[]): number[] {
+  const total = QUESTIONS.length;
+  const ranked = scores
+    .map((s, i) => ({ index: i, percentage: Math.round((s / total) * 100) }))
+    .sort((a, b) => b.percentage - a.percentage);
+
+  const gap = ranked[0].percentage - ranked[1].percentage;
+  return gap <= 10 ? [ranked[0].index, ranked[1].index] : [ranked[0].index];
+}
+
 export default function Questionnaire() {
+  const router = useRouter();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [scores, setScores] = useState<number[]>([0, 0, 0, 0]);
-  const [winningFamily, setWinningFamily] = useState<number | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredAnswerIndex, setHoveredAnswerIndex] = useState<number | null>(null);
   const [persistentAdditions, setPersistentAdditions] = useState<Partial<Record<number, string>>>({});
@@ -64,17 +75,14 @@ export default function Questionnaire() {
             Object.fromEntries(ESSENCES.map((e, i) => [e.label, nextScores[i]])),
             "→",
             ESSENCES[leading].label,
-            ESSENCES[leading].color,
           );
           setHoveredAnswerIndex(null);
           if (currentIndex < total - 1) {
             setCurrentIndex((prev) => prev + 1);
             setSelectedIndex(null);
           } else {
-            const winner = nextScores.indexOf(Math.max(...nextScores));
-            setWinningFamily(winner);
-            setIsComplete(true);
-            setSelectedIndex(null);
+            const families = computeFamilies(nextScores);
+            void router.push(`/resultat?families=${families.join(",")}`);
           }
         },
         () => {
@@ -88,7 +96,6 @@ export default function Questionnaire() {
   const leadingFamily = scores.every((s) => s === 0)
     ? null
     : scores.indexOf(Math.max(...scores));
-  const resultLabel = winningFamily !== null ? ESSENCES[winningFamily].label : "";
 
   const toRgba = (hex: string, opacity: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -122,36 +129,26 @@ export default function Questionnaire() {
       />
 
       <div className={styles.content} ref={contentRef}>
-        {isComplete ? (
-          <div className={styles.complete}>
-            <p className={styles.completeEyebrow}>Votre essence est</p>
-            <h2 className={styles.completeTitle}>{resultLabel}</h2>
-            <p className={styles.completeBody}>Votre senteur se révèle… laissez-vous envelopper.</p>
-          </div>
-        ) : (
-          <>
-            <h1 className={styles.question} key={currentIndex}>
-              {currentQuestion.sentence}
-            </h1>
+        <h1 className={styles.question} key={currentIndex}>
+          {currentQuestion.sentence}
+        </h1>
 
-            <div className={styles.answers} role="group" aria-label="Réponses possibles">
-              {currentQuestion.answers.map((answer, index) => (
-                <button
-                  key={answer.label}
-                  ref={(node) => { answerButtonsRef.current[index] = node; }}
-                  type="button"
-                  className={`${styles.answer} ${selectedIndex === index ? styles.selected : ""}`}
-                  onClick={() => handleAnswer(index)}
-                  onMouseEnter={() => setHoveredAnswerIndex(index)}
-                  onMouseLeave={() => setHoveredAnswerIndex(null)}
-                  disabled={isTransitioning}
-                >
-                  {answer.label}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+        <div className={styles.answers} role="group" aria-label="Réponses possibles">
+          {currentQuestion.answers.map((answer, index) => (
+            <button
+              key={answer.label}
+              ref={(node) => { answerButtonsRef.current[index] = node; }}
+              type="button"
+              className={`${styles.answer} ${selectedIndex === index ? styles.selected : ""}`}
+              onClick={() => handleAnswer(index)}
+              onMouseEnter={() => setHoveredAnswerIndex(index)}
+              onMouseLeave={() => setHoveredAnswerIndex(null)}
+              disabled={isTransitioning}
+            >
+              {answer.label}
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

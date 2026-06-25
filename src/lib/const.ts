@@ -2,6 +2,24 @@ import type { CSSProperties } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export type Fragrance = {
+    name: string;
+    notes: string;
+    image: string;
+    url: string;
+};
+
+export type EssenceProfile = {
+    bgImage: string;
+    description: string;
+    fragrances: Fragrance[];
+};
+
+export type DuoProfile = {
+    title: string;
+    description: string;
+};
+
 export type Slot = {
     zIndex: number;
     parallaxStrength: number;
@@ -103,6 +121,84 @@ export const SLOTS: Slot[] = [
         cover: { xPct: 0.87, yPct: 0.82, widthPct: 0.23, rotation: -7 },
     },
 ];
+
+// ─── Profils enrichis par essence ────────────────────────────────────────────
+
+export const ESSENCE_PROFILES: EssenceProfile[] = [
+    // 0 — Ardente
+    {
+        bgImage: "/images/bgSigle.png",
+        description: "Votre présence est une flamme qui attire sans consumer. Vous aimez les moments suspendus, la chaleur d'un intérieur choisi, les rituels qui font du temps ordinaire quelque chose d'essentiel.",
+        fragrances: [
+            { name: "Empire",         notes: "Encens · Myrrhe · Santal",          image: "/images/ardente/Produits/Empire.webp",          url: "/fragrances/empire" },
+            { name: "Gabriel",        notes: "Rose · Musc · Santal",               image: "/images/ardente/Produits/Gabriel.webp",         url: "/fragrances/gabriel" },
+            { name: "Solis Rex",      notes: "Oliban · Benjoin · Cèdre",           image: "/images/ardente/Produits/Solis Rex.webp",       url: "/fragrances/solis-rex" },
+            { name: "Spiritus Sancti",notes: "Encens · Ciste · Cèdre",             image: "/images/ardente/Produits/Spiritus Sancti.webp", url: "/fragrances/spiritus-sancti" },
+        ],
+    },
+    // 1 — Méridienne
+    {
+        bgImage: "/images/bgSigle.png",
+        description: "Solaire sans jamais brûler, votre présence réchauffe. On vous devine généreuse, hospitalière, attachée aux plaisirs simples que vous transformez en moments précieux. Vous n'habitez pas les lieux : vous les ensoleillez.",
+        fragrances: [
+            { name: "Figuerie", notes: "Feuilles de Cèdre · Feuilles de Figuier · Humus Éther", image: "/images/méridienne/Produits/Figuerie.webp", url: "/fragrances/figuerie" },
+            { name: "Cyrnos",   notes: "Citron · Myrte · Thym",                                  image: "/images/méridienne/Produits/Cyrnos.webp",   url: "/fragrances/cyrnos" },
+            { name: "Reggio",   notes: "Feuilles de Pamplemousse · Mandarine",                   image: "/images/méridienne/Produits/Reggio.webp",   url: "/fragrances/reggio" },
+            { name: "Salta",    notes: "Écorce de Bergamote · Verveine",                         image: "/images/méridienne/Produits/Salta.webp",    url: "/fragrances/salta" },
+        ],
+    },
+    // 2 — Floraison
+    {
+        bgImage: "/images/bgSigle.png",
+        description: "Délicate sans être fragile, vous avez le don de faire fleurir ce qui vous entoure. Les jardins vous reconnaissent, les pétales s'inclinent. Votre essence est celle du renouveau perpétuel.",
+        fragrances: [
+            { name: "Joséphine",  notes: "Bergamote · Cachemire · Iris",          image: "/images/floraison/Produits/Joséphine.webp",  url: "/fragrances/josephine" },
+            { name: "Maduraï",    notes: "Ylang-Ylang · Benjoin · Jasmin",         image: "/images/floraison/Produits/Maduraï.webp",    url: "/fragrances/madurai" },
+            { name: "Odalisque",  notes: "Citron · Orange · Fleur d'Oranger",      image: "/images/floraison/Produits/Odalisque.webp",  url: "/fragrances/odalisque" },
+            { name: "Tuileries",  notes: "Bois de Rose · Cassis · Mandarine",      image: "/images/floraison/Produits/Tuileries.webp",  url: "/fragrances/tuileries" },
+        ],
+    },
+    // 3 — Carnation
+    {
+        bgImage: "/images/bgSigle.png",
+        description: "Votre présence est un refuge. Vous incarnez la profondeur, le raffinement discret, la mémoire sensible des choses belles. Votre univers est celui du temps long, des matières nobles et des émotions tenues.",
+        fragrances: [
+            { name: "Dada",     notes: "Vétiver · Cèdre · Iris",                  image: "/images/carnation/Produits/Dada.webp",      url: "/fragrances/dada" },
+            { name: "Ernesto",  notes: "Tabac · Cuir · Ambre",                     image: "/images/carnation/Produits/Ernesto.webp",   url: "/fragrances/ernesto" },
+            { name: "Madeleine",notes: "Magnolia · Musc · Bois Blanc",             image: "/images/carnation/Produits/Madeleine.webp", url: "/fragrances/madeleine" },
+            { name: "Ourika",   notes: "Rose · Poivre de Sichuan · Vétiver",       image: "/images/carnation/Produits/Ourika.webp",    url: "/fragrances/ourika" },
+        ],
+    },
+];
+
+// ─── Titres & descriptions pour le résultat duo ───────────────────────────────
+
+export const DUO_PROFILES: Record<string, DuoProfile> = {
+    "0_1": {
+        title: "Entre Braise et Soleil",
+        description: "Vous portez en vous la chaleur du feu et la lumière du plein été. Intense et généreux, vous savez autant envelopper que réchauffer. Votre présence est double : profonde et rayonnante.",
+    },
+    "0_2": {
+        title: "La Saison des Feux Doux",
+        description: "En vous coexistent la fleur et la flamme. Vous aimez les contrastes qui ne s'opposent pas mais se complètent — la douceur des jardins, la chaleur des soirs qui durent. Vous transformez chaque instant en rituel.",
+    },
+    "0_3": {
+        title: "L'Ombre et la Braise",
+        description: "Vous incarnez les profondeurs. Entre la brûlure lente et l'élégance tenue, votre présence est singulière, inoubliable. Vous ne vous dévoilez qu'à ceux qui savent regarder.",
+    },
+    "1_2": {
+        title: "Entre-deux Saisons",
+        description: "Solaire sans jamais brûler, votre présence réchauffe. On vous devine généreuse, hospitalière, attachée aux plaisirs simples que vous transformez en moments précieux. Vous n'habitez pas les lieux : vous les ensoleillez.",
+    },
+    "1_3": {
+        title: "Lumière Ambrée",
+        description: "Vous avez l'élégance du soleil couchant : éclatant et retenu à la fois. Entre la clarté méridionale et la richesse des épices, votre univers est celui des beautés qui durent.",
+    },
+    "2_3": {
+        title: "Le Jardin des Heures",
+        description: "Entre le pétale et la patine, vous naviguez avec grâce. Vous avez le goût des choses vivantes et des choses qui durent — la fleur et le cuir, la rosée et l'ambre. Un univers à nul autre pareil.",
+    },
+};
 
 // ─── Questions + gestion des médias ──────────────────────────────────────────
 // ambientSlots  : médias de repos affichés par slot entre les réponses
