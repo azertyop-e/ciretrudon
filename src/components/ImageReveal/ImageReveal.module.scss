@@ -1,0 +1,30 @@
+.panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wrapper {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(100% 0% 0% 0%);
+  will-change: clip-path;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+
+  // Masque l'élément quand son src est vide
+  &:not([src]),
+  &[src=""] {
+    display: none;
+  }
+}

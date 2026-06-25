@@ -1,0 +1,32 @@
+.wrapper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.transitioning {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.ambientImage {
+  position: absolute;
+  overflow: hidden;
+  will-change: transform;
+  box-shadow: 0 8px 28px rgba(14, 14, 11, 0.14);
+
+  img {
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 768px) {
+  .ambientImage {
+    box-shadow: 0 4px 16px rgba(14, 14, 11, 0.12);
+  }
+}
