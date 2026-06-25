@@ -6,7 +6,7 @@ export default function Hero() {
     <section className={styles.hero} aria-label="Nuit Rouge">
       <Image
         src="/images/hero-nuit-rouge.jpg"
-        alt="Collection Nuit Rouge — flacons de parfum en verre rubis sur fond damassé"
+        alt="Collection Nuit Rouge flacons de parfum en verre rubis sur fond damassé"
         fill
         priority
         sizes="100vw"

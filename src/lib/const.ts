@@ -42,6 +42,71 @@ export type Question = {
     answers: Answer[];
 };
 
+// ─── Configuration audio ──────────────────────────────────────────────────────
+
+export type AudioTrack = {
+    src: string;
+    volume: number;
+    loop?: true | number; // true (défaut) = infini | number = N répétitions puis silence
+};
+
+export type AudioScene = AudioTrack[];
+
+export const AUDIO_TRACKS: [AudioScene[], AudioScene[], AudioScene[], AudioScene[]] = [
+    [],
+    [
+        [
+            { 
+                src: "/audio/meridienne/Sea Waves - Sound Effect.mp3",
+                volume: 0.4,
+                loop: true,
+            },
+            { 
+                src: "/audio/meridienne/Jus.mp3",
+                volume: 0.3,
+                loop: 1,
+            },
+            { 
+                src: "/audio/meridienne/Bruit café.mp3",
+                volume: 0.1,
+                loop: 1,
+            },
+        ],
+        [
+            { 
+                src: "/audio/meridienne/Cigale.mp3",
+                volume: 0.1,
+                loop: true,
+            },
+            { 
+                src: "/audio/meridienne/Mer.mp3",
+                volume: 0.6,
+                loop: true,
+            }
+        ],
+    ],
+    [
+        [
+            { 
+                src: "/audio/floraison/Sweet Bird Sound - Morning Sound Effect  Garden Bird.mp3", 
+                volume: 0.4, 
+                loop: true 
+            },
+            { 
+                src: "/audio/floraison/Wind blowing tree leaves, SOUND 4k uhd.mp3",             
+                volume: 0.6,
+                loop: true 
+            },
+            { 
+                src: "/audio/floraison/river sound effect.mp3",                                 
+                volume: 0.1,
+                loop: true 
+            },
+        ],
+    ],
+    [],
+];
+
 // ─── Essences ─────────────────────────────────────────────────────────────────
 
 export const ESSENCES = [
@@ -125,45 +190,45 @@ export const SLOTS: Slot[] = [
 // ─── Profils enrichis par essence ────────────────────────────────────────────
 
 export const ESSENCE_PROFILES: EssenceProfile[] = [
-    // 0 — Ardente
+    // 0 Ardente
     {
         bgImage: "/images/bgSigle.png",
         description: "Votre présence est une flamme qui attire sans consumer. Vous aimez les moments suspendus, la chaleur d'un intérieur choisi, les rituels qui font du temps ordinaire quelque chose d'essentiel.",
         fragrances: [
-            { name: "Empire",         notes: "Encens · Myrrhe · Santal",          image: "/images/ardente/Produits/Empire.webp",          url: "/fragrances/empire" },
+            { name: "Empire",         notes: "Encens · Myrrhe · Santal",           image: "/images/ardente/Produits/Empire.webp",          url: "/fragrances/empire" },
             { name: "Gabriel",        notes: "Rose · Musc · Santal",               image: "/images/ardente/Produits/Gabriel.webp",         url: "/fragrances/gabriel" },
             { name: "Solis Rex",      notes: "Oliban · Benjoin · Cèdre",           image: "/images/ardente/Produits/Solis Rex.webp",       url: "/fragrances/solis-rex" },
             { name: "Spiritus Sancti",notes: "Encens · Ciste · Cèdre",             image: "/images/ardente/Produits/Spiritus Sancti.webp", url: "/fragrances/spiritus-sancti" },
         ],
     },
-    // 1 — Méridienne
+    // 1 Méridienne
     {
         bgImage: "/images/bgSigle.png",
         description: "Solaire sans jamais brûler, votre présence réchauffe. On vous devine généreuse, hospitalière, attachée aux plaisirs simples que vous transformez en moments précieux. Vous n'habitez pas les lieux : vous les ensoleillez.",
         fragrances: [
-            { name: "Figuerie", notes: "Feuilles de Cèdre · Feuilles de Figuier · Humus Éther", image: "/images/méridienne/Produits/Figuerie.webp", url: "/fragrances/figuerie" },
+            { name: "Figuerie", notes: "Feuilles de Cèdre · Feuilles de Figuier · Humus Éther",  image: "/images/méridienne/Produits/Figuerie.webp", url: "/fragrances/figuerie" },
             { name: "Cyrnos",   notes: "Citron · Myrte · Thym",                                  image: "/images/méridienne/Produits/Cyrnos.webp",   url: "/fragrances/cyrnos" },
             { name: "Reggio",   notes: "Feuilles de Pamplemousse · Mandarine",                   image: "/images/méridienne/Produits/Reggio.webp",   url: "/fragrances/reggio" },
             { name: "Salta",    notes: "Écorce de Bergamote · Verveine",                         image: "/images/méridienne/Produits/Salta.webp",    url: "/fragrances/salta" },
         ],
     },
-    // 2 — Floraison
+    // 2 Floraison
     {
         bgImage: "/images/bgSigle.png",
         description: "Délicate sans être fragile, vous avez le don de faire fleurir ce qui vous entoure. Les jardins vous reconnaissent, les pétales s'inclinent. Votre essence est celle du renouveau perpétuel.",
         fragrances: [
-            { name: "Joséphine",  notes: "Bergamote · Cachemire · Iris",          image: "/images/floraison/Produits/Joséphine.webp",  url: "/fragrances/josephine" },
+            { name: "Joséphine",  notes: "Bergamote · Cachemire · Iris",           image: "/images/floraison/Produits/Joséphine.webp",  url: "/fragrances/josephine" },
             { name: "Maduraï",    notes: "Ylang-Ylang · Benjoin · Jasmin",         image: "/images/floraison/Produits/Maduraï.webp",    url: "/fragrances/madurai" },
             { name: "Odalisque",  notes: "Citron · Orange · Fleur d'Oranger",      image: "/images/floraison/Produits/Odalisque.webp",  url: "/fragrances/odalisque" },
             { name: "Tuileries",  notes: "Bois de Rose · Cassis · Mandarine",      image: "/images/floraison/Produits/Tuileries.webp",  url: "/fragrances/tuileries" },
         ],
     },
-    // 3 — Carnation
+    // 3 Carnation
     {
         bgImage: "/images/bgSigle.png",
         description: "Votre présence est un refuge. Vous incarnez la profondeur, le raffinement discret, la mémoire sensible des choses belles. Votre univers est celui du temps long, des matières nobles et des émotions tenues.",
         fragrances: [
-            { name: "Dada",     notes: "Vétiver · Cèdre · Iris",                  image: "/images/carnation/Produits/Dada.webp",      url: "/fragrances/dada" },
+            { name: "Dada",     notes: "Vétiver · Cèdre · Iris",                   image: "/images/carnation/Produits/Dada.webp",      url: "/fragrances/dada" },
             { name: "Ernesto",  notes: "Tabac · Cuir · Ambre",                     image: "/images/carnation/Produits/Ernesto.webp",   url: "/fragrances/ernesto" },
             { name: "Madeleine",notes: "Magnolia · Musc · Bois Blanc",             image: "/images/carnation/Produits/Madeleine.webp", url: "/fragrances/madeleine" },
             { name: "Ourika",   notes: "Rose · Poivre de Sichuan · Vétiver",       image: "/images/carnation/Produits/Ourika.webp",    url: "/fragrances/ourika" },
@@ -180,7 +245,7 @@ export const DUO_PROFILES: Record<string, DuoProfile> = {
     },
     "0_2": {
         title: "La Saison des Feux Doux",
-        description: "En vous coexistent la fleur et la flamme. Vous aimez les contrastes qui ne s'opposent pas mais se complètent — la douceur des jardins, la chaleur des soirs qui durent. Vous transformez chaque instant en rituel.",
+        description: "Vous aimez les contrastes qui ne s'opposent pas mais se complètent, la douceur des jardins et la chaleur des soirs qui durent. Vous transformez chaque instant en rituel.",
     },
     "0_3": {
         title: "L'Ombre et la Braise",
@@ -196,7 +261,7 @@ export const DUO_PROFILES: Record<string, DuoProfile> = {
     },
     "2_3": {
         title: "Le Jardin des Heures",
-        description: "Entre le pétale et la patine, vous naviguez avec grâce. Vous avez le goût des choses vivantes et des choses qui durent — la fleur et le cuir, la rosée et l'ambre. Un univers à nul autre pareil.",
+        description: "Entre le pétale et la patine, vous naviguez avec grâce. Vous avez le goût des choses vivantes et des choses qui durent, la rosée et l'ambre. Un univers à nul autre pareil.",
     },
 };
 
@@ -211,7 +276,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "Un chalet",
-                family: 0, // Ardente — feu, chaleur, intimité
+                family: 0, // Ardente: feu, chaleur, intimité
                 pourcentage: 30,
                 replacements: {},
                 additions: {
@@ -224,7 +289,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Une bibliothèque",
-                family: 3, // Carnation — raffinement, cuir, intellect
+                family: 3, // Carnation: raffinement, cuir, intellect
                 pourcentage: 20,
                 replacements: {
                     3: "/images/floraison/halo.jpeg",
@@ -236,7 +301,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Un jardin",
-                family: 2, // Floraison — nature, végétal, fleurs
+                family: 2, // Floraison:  nature, végétal, fleurs
                 pourcentage: 10,
                 replacements: {
                     3: "/images/floraison/Herbe.mp4",
@@ -248,7 +313,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Le bord de mer",
-                family: 1, // Méridienne — mer, littoral, évasion
+                family: 1, // Méridienne:  mer, littoral, évasion
                 pourcentage: 0,
                 replacements: {
                     3: "/images/méridienne/Coast.mp4",
@@ -336,7 +401,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "De la cire tiède",
-                family: 0, // Ardente — bougie, cire
+                family: 0, // Ardente: bougie, cire
                 pourcentage: 30,
                 replacements: {
                     3: "/images/floraison/halo.jpeg",
@@ -348,7 +413,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Du cuir patiné",
-                family: 3, // Carnation — cuir, noblesse
+                family: 3, // Carnation: cuir, noblesse
                 pourcentage: 20,
                 replacements: {
                     3: "/images/méridienne/Ceramique.jpg",
@@ -399,7 +464,7 @@ export const QUESTIONS: Question[] = [
         answers: [
             {
                 label: "Azur",
-                family: 1, // Méridienne — mer, ciel
+                family: 1, // Méridienne: mer, ciel
                 pourcentage: 30,
                 replacements: {
                     3: "/images/méridienne/Mer-2.mp4",
@@ -411,7 +476,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Émeraude",
-                family: 2, // Floraison — verdure
+                family: 2, // Floraison: verdure
                 pourcentage: 20,
                 replacements: {
                     3: "/images/floraison/lumiere.mp4",
@@ -423,7 +488,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Noir profond",
-                family: 0, // Ardente — obscurité, intensité
+                family: 0, // Ardente: obscurité, intensité
                 pourcentage: 10,
                 replacements: {
                     3: "/images/hero-nuit-rouge.jpg",
@@ -435,7 +500,7 @@ export const QUESTIONS: Question[] = [
             },
             {
                 label: "Brun/ambré",
-                family: 3, // Carnation — épices, ambre
+                family: 3, // Carnation: épices, ambre
                 pourcentage: 40,
                 replacements: {
                     3: "/images/méridienne/Figue.mp4",

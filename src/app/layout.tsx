@@ -16,7 +16,7 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "Cire Trudon — Votre senteur vous attend",
+  title: "Cire Trudon",
   description: "Une expérience olfactive immersive pour découvrir votre bougie Cire Trudon.",
 };
 

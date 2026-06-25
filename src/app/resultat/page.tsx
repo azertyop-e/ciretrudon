@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import ResultClient from "./ResultClient";
 
 export const metadata = {
-  title: "Cire Trudon — Votre essence",
+  title: "Cire Trudon",
   description: "Découvrez votre univers olfactif Cire Trudon.",
 };
 

@@ -9,7 +9,7 @@ import styles from "./ImageStack.module.scss";
 
 const MAX_Z = SLOTS.length;
 const DEPTHS = SLOTS.map((s) => 1 - s.zIndex / MAX_Z);
-// Rang de chaque slot reveal (back → front) — utilisé pour le stagger des slots ambient
+// Rang de chaque slot reveal (back → front)
 const REVEAL_RANKS = SLOTS.map((s, i) =>
   s.reveal ? SLOTS.slice(0, i).filter((r) => r.reveal).length : -1
 );

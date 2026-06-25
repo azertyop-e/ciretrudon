@@ -95,7 +95,7 @@ export default function Nav() {
             <span>Menu</span>
           </button>
 
-          <a href="/" className={styles.logo} aria-label="Trudon — Accueil">
+          <a href="/" className={styles.logo} aria-label="Accueil">
             <span className={styles.logoName}>Trvdon</span>
             <span className={styles.logoYear}>.1643.</span>
           </a>

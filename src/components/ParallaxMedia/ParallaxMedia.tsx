@@ -6,7 +6,7 @@ import styles from "./ParallaxMedia.module.scss";
 
 export interface ParallaxLayer {
   content: React.ReactNode;
-  // 0 = premier plan (net, mouvement max) — 1 = arrière-plan (flou max, mouvement réduit)
+  // 0 = premier plan (net, mouvement max) 1 = arrière-plan
   // Si omis, la profondeur est calculée automatiquement depuis l'index de la couche
   depth?: number;
 }
