@@ -1,57 +1,45 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
+import { useRef, Children } from "react";
+import { useParallaxMouse } from "@/hooks/useParallaxMouse";
 import styles from "./ParallaxMedia.module.scss";
 
+export interface ParallaxLayer {
+  content: React.ReactNode;
+  // 0 = premier plan (net, mouvement max) — 1 = arrière-plan (flou max, mouvement réduit)
+  // Si omis, la profondeur est calculée automatiquement depuis l'index de la couche
+  depth?: number;
+}
+
 interface ParallaxMediaProps {
-  children: React.ReactNode;
+  layers?: ParallaxLayer[];
+  children?: React.ReactNode;
   strength?: number;
+  maxBlur?: number;
   className?: string;
 }
 
 export default function ParallaxMedia({
+  layers,
   children,
   strength = 24,
+  maxBlur = 4,
   className,
 }: ParallaxMediaProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+  const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const inner = innerRef.current;
-    if (!wrapper || !inner) return;
+  const resolvedLayers: ParallaxLayer[] = layers ?? Children.toArray(children).map((child) => ({ content: child }));
+  const count = resolvedLayers.length;
 
-    const ctx = gsap.context(() => {
-      const quickX = gsap.quickTo(inner, "x", { duration: 0.5, ease: "power3.out" });
-      const quickY = gsap.quickTo(inner, "y", { duration: 0.5, ease: "power3.out" });
+  const depths = resolvedLayers.map((l, i) =>
+    l.depth !== undefined ? l.depth : count > 1 ? i / (count - 1) : 0
+  );
 
-      const onMove = (e: MouseEvent) => {
-        const rect = wrapper.getBoundingClientRect();
-        // -1 à 1 relatif au centre du container
-        const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-        quickX(nx * strength);
-        quickY(ny * strength);
-      };
-
-      const onLeave = () => {
-        quickX(0);
-        quickY(0);
-      };
-
-      wrapper.addEventListener("mousemove", onMove);
-      wrapper.addEventListener("mouseleave", onLeave);
-
-      return () => {
-        wrapper.removeEventListener("mousemove", onMove);
-        wrapper.removeEventListener("mouseleave", onLeave);
-      };
-    }, wrapper);
-
-    return () => ctx.revert();
-  }, [strength]);
+  useParallaxMouse(layerRefs, depths, strength, {
+    source: "element",
+    containerRef: wrapperRef,
+  });
 
   return (
     <div
@@ -59,9 +47,19 @@ export default function ParallaxMedia({
       className={`${styles.wrapper} ${className ?? ""}`}
       style={{ "--_p-buffer": `${strength}px` } as React.CSSProperties}
     >
-      <div ref={innerRef} className={styles.inner}>
-        {children}
-      </div>
+      {resolvedLayers.map((layer, i) => {
+        const blur = depths[i] * maxBlur;
+        return (
+          <div
+            key={i}
+            ref={(el) => { layerRefs.current[i] = el; }}
+            className={styles.layer}
+            style={blur > 0 ? { filter: `blur(${blur.toFixed(2)}px)` } : undefined}
+          >
+            {layer.content}
+          </div>
+        );
+      })}
     </div>
   );
 }
