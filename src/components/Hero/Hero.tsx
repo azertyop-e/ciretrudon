@@ -10,10 +10,10 @@ export default function Hero() {
   const { triggerExit } = usePageTransition();
 
   return (
-    <section className={styles.hero} aria-label="Nuit Rouge">
+    <section className={styles.hero} aria-label="Découvrez votre essence">
       <Image
-        src="/images/hero-nuit-rouge.jpg"
-        alt="Collection Nuit Rouge flacons de parfum en verre rubis sur fond damassé"
+        src="/images/hero.png"
+        alt="Bougies Cire Trudon sur cheminée en marbre, miroir doré et orchidées"
         fill
         priority
         sizes="100vw"
@@ -23,14 +23,14 @@ export default function Hero() {
       <div className={styles.gradientBottom} aria-hidden="true" />
 
       <div className={styles.content}>
-        <h1 className={styles.title}>Nuit Rouge</h1>
-        <p className={styles.subtitle}>Une ode à l&apos;opulence.</p>
+        <h1 className={styles.title}>Découvrez votre essence</h1>
+        <p className={styles.subtitle}>Avec notre parcours de découverte</p>
         <button
           type="button"
           className={styles.cta}
           onClick={() => triggerExit(() => void router.push("/questionnaire"))}
         >
-          Questionnaire
+          Découvrir
         </button>
       </div>
     </section>
