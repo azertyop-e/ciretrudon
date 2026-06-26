@@ -3,8 +3,8 @@
   top: 2rem;
   left: 2rem;
   z-index: 9999;
-  width: 2.75rem;
   height: 2.75rem;
+  padding: 0 1rem;
   border-radius: 0;
   background: #fff;
   border: 1px solid #000;
@@ -12,9 +12,19 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.375rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   transition: background 0.15s ease, color 0.15s ease;
   animation: fadeIn 0.3s ease both;
+
+  svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+  }
 
   &:hover {
     background: #000;
